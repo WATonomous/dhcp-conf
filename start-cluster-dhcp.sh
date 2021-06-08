@@ -2,13 +2,16 @@
 
 TYPE=${1:-primary}
 
-if ! command -v docker &> /dev/null
-then
+if ! command -v docker &> /dev/null; then
 	echo "------ docker not found, installing docker"
 	apk add docker
 fi
 
-service docker --ifstopped start
+if ! service docker status | grep started; then
+	echo "------ starting docker service"
+	service docker start
+	sleep 3
+fi
 
 echo "------ starting $TYPE DHCP server"
 
